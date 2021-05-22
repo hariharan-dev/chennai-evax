@@ -25,9 +25,9 @@ let ageValue = 44;
 
 document.getElementById(
 	"header"
-).innerText = `Chennai Vaccines Availability from ${today} to ${
+).innerHTML = `Chennai Vaccines Availability from <span style="color: green">${today}</span> to <span style="color: green">${
 	dates[dates.length - 1]
-}`;
+}</span>`;
 
 document.getElementById("fetch-btn").addEventListener("click", () => {
 	if (!ageValue) {
@@ -44,45 +44,51 @@ document.getElementById("fetch-btn").addEventListener("click", () => {
 			571 + // district id
 			"&date=" +
 			today
-	).then(async (d) => {
-		const data = await d.json();
-		const availableCentres = data.centers.filter((centre) =>
-			centre.sessions.some(
-				(s) =>
-					s.min_age_limit <= Number(ageValue) &&
-					dates.indexOf(s.date) > -1 &&
-					s[doseValue] > 0
-			)
-		);
-		const list = document.createElement("div");
-		list.classList.add("list");
-        let centreTemplate;
-		if (availableCentres.length === 0) {
-            centreTemplate = vaccineCenter.content.cloneNode(true);
-			let name = centreTemplate.querySelector("#name");
-			name.innerHTML = `No Vaccine Centres Available.`;
-            list.appendChild(centreTemplate);
-		}
-		availableCentres.forEach((centre, index) => {
-            centreTemplate = vaccineCenter.content.cloneNode(true);
-			let name = centreTemplate.querySelector("#name");
-			name.innerHTML = `${index + 1}. ${centre.name} - ${centre.block_name}`;
-
-			const sessionsData = centre.sessions.filter(
-				(session) => dates.indexOf(session.date) > -1 && session[doseValue] > 0
+	)
+		.then(async (d) => {
+			const data = await d.json();
+			const availableCentres = data.centers.filter((centre) =>
+				centre.sessions.some(
+					(s) =>
+						s.min_age_limit <= Number(ageValue) &&
+						dates.indexOf(s.date) > -1 &&
+						s[doseValue] > 0
+				)
 			);
-			let sessionsEl = centreTemplate.querySelector("#sessions");
-			sessionsData.forEach((s) => {
-				sessionsEl.innerHTML += `${s.date} - ${s.vaccine} - ${s[doseValue]} <br>`;
-			});
-            list.appendChild(centreTemplate);
-		});
-		main.appendChild(list);
-	});
-});
+			const list = document.createElement("div");
+			list.classList.add("list");
+			let centreTemplate;
+			if (availableCentres.length === 0) {
+				centreTemplate = vaccineCenter.content.cloneNode(true);
+				let name = centreTemplate.querySelector("#name");
+				name.innerHTML = `No Vaccine Centres Available.`;
+				list.appendChild(centreTemplate);
+			}
+			availableCentres.forEach((centre, index) => {
+				centreTemplate = vaccineCenter.content.cloneNode(true);
+				let name = centreTemplate.querySelector("#name");
+				name.innerHTML = `${index + 1}. ${centre.name} - ${centre.block_name}`;
 
-function removeAllChildNodes(parent) {
-	while (parent.firstChild) {
-		parent.removeChild(parent.firstChild);
-	}
-}
+				const sessionsData = centre.sessions.filter(
+					(session) =>
+						dates.indexOf(session.date) > -1 && session[doseValue] > 0
+				);
+				let sessionsEl = centreTemplate.querySelector("#sessions");
+				sessionsData.forEach((s) => {
+					sessionsEl.innerHTML += `${s.date} - ${s.vaccine} - ${s[doseValue]} <br>`;
+				});
+				list.appendChild(centreTemplate);
+			});
+			main.appendChild(list);
+		})
+		.catch(() => {
+			const list = document.createElement("div");
+			list.classList.add("list");
+			let centreTemplate;
+			centreTemplate = vaccineCenter.content.cloneNode(true);
+			let name = centreTemplate.querySelector("#name");
+			name.innerHTML = `Oops! Something went wrong :(`;
+			list.appendChild(centreTemplate);
+			main.appendChild(list);
+		});
+});
