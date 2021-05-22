@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<title>Chennai Vaccines</title>
+	</head>
+	<body>
+		<template id="vaccineCenter">
+			<h4 id="name"></h4>
+			<h5 style="margin-left: 1rem" id="sessions"></h5>
+		</template>
+		<template id="noVaccine">
+			<p class="list">No Vaccine Centres.</p>
+		</template>
+		<h3 id="header"></h3>
+		<main id="main">
+			<label for="dose-selector">Age:</label>
+			<select
+				style="margin-right: 10px"
+				id="age-selector"
+				onchange="ageValue = this.value"
+			>
+				<option value="44">18+</option>
+				<option value="45">45+</option>
+			</select>
+			<label for="dose-selector">Dose:</label>
+			<select
+				style="margin-right: 10px"
+				id="dose-selector"
+				onchange="doseValue = this.value"
+			>
+				<option value="available_capacity_dose1">Dose 1</option>
+				<option value="available_capacity_dose2">Dose 2</option>
+			</select>
+			<button id="fetch-btn">Fetch</button>
+			<br />
+			<div class="list"></div>
+		</main>
+		<script src="./script.js"></script>
+	</body>
+</html>
