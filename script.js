@@ -25,7 +25,7 @@ let ageValue = 44;
 
 document.getElementById(
 	"header"
-).innerText = `Chennai Vaccines Availability from ${today} - ${
+).innerText = `Chennai Vaccines Availability from ${today} to ${
 	dates[dates.length - 1]
 }`;
 
